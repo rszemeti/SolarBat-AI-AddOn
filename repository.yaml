@@ -1,3 +1,9 @@
 name: SolarBat-AI Add-on Repository
-url: https://github.com/YOUR_USERNAME/solarbat-ai-addon
-maintainer: YOUR_NAME
+url: https://github.com/rszemeti/solarbat-ai-addon
+maintainer: Robin Szemeti
+email: robin@redpoint.org.uk
+description: A Home Assistant add-on for SolarBat-AI, an AI-powered solar battery management system.
+version: 1.0.0
+license: GPL
+homeassistant: true
+
