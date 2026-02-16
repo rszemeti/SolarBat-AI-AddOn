@@ -1,0 +1,20 @@
+# Auto-generated AppDaemon configuration for SolarBat-AI addon
+# Do not edit - this is regenerated on each startup
+
+secrets: /config/secrets.yaml
+appdaemon:
+  latitude: __LATITUDE__
+  longitude: __LONGITUDE__
+  elevation: __ELEVATION__
+  time_zone: __TIMEZONE__
+  app_dir: /app/apps
+  plugins:
+    HASS:
+      type: hass
+      ha_url: "__HA_URL__"
+      token: "__HA_TOKEN__"
+http:
+  url: http://0.0.0.0:5050
+admin:
+api:
+hadashboard:

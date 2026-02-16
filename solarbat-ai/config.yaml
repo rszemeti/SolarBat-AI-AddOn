@@ -1,0 +1,29 @@
+name: "SolarBat-AI"
+description: "Intelligent solar battery optimizer for Octopus Agile with Solcast forecasts"
+version: "1.0.0"
+slug: "solarbat-ai"
+url: "https://github.com/YOUR_USERNAME/SolarBat-AI"
+arch:
+  - amd64
+  - aarch64
+  - armv7
+startup: "application"
+boot: "auto"
+init: false
+homeassistant_api: true
+hassio_api: true
+map:
+  - type: addon_config
+    read_only: false
+ports:
+  5050/tcp: 5050
+ports_description:
+  5050/tcp: "SolarBat-AI Web Dashboard"
+ingress: true
+ingress_port: 5050
+panel_icon: "mdi:solar-power-variant"
+panel_title: "SolarBat-AI"
+options:
+  log_level: "info"
+schema:
+  log_level: "list(trace|debug|info|notice|warning|error|fatal)?"
