@@ -1,15 +1,26 @@
-ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base-python:3.12-alpine3.19
+ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base-python:3.12-bullseye
+ARG BUILD_VERSION
 FROM ${BUILD_FROM}
 
+# Set shell
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # Install system dependencies
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     curl \
     git \
     jq \
-    libffi
+    libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install all Python dependencies in one layer
+# Set workdir
+WORKDIR /app
+
+# Copy app files
+COPY rootfs/ /app/
+
+# Install Python dependencies
 RUN pip3 install --no-cache-dir --break-system-packages \
     appdaemon==4.4.2 \
     requests \
@@ -31,15 +42,27 @@ RUN pip3 install --no-cache-dir --break-system-packages \
     tomli~=2.0.1 \
     tomli-w~=1.0.0
 
-# Create directories
-RUN mkdir -p /app /config /data
-
-# Copy startup scripts
-COPY rootfs/run.sh /run.sh
-COPY rootfs/appdaemon.yaml.template /app/appdaemon.yaml.template
-COPY rootfs/bootstrap.sh /bootstrap.sh
-RUN chmod a+x /run.sh /bootstrap.sh
+# Make scripts executable
+RUN chmod +x /app/run.sh /app/bootstrap.sh
 
 EXPOSE 5050
 
-CMD ["/run.sh"]
+CMD ["/app/run.sh"]
+
+# Metadata
+ARG BUILD_ARCH
+ARG BUILD_DATE
+ARG BUILD_DESCRIPTION
+ARG BUILD_NAME
+ARG BUILD_REF
+LABEL \
+    io.hass.name="${BUILD_NAME}" \
+    io.hass.description="${BUILD_DESCRIPTION}" \
+    io.hass.arch="${BUILD_ARCH}" \
+    io.hass.type="addon" \
+    io.hass.version=${BUILD_VERSION} \
+    maintainer="rszemeti (https://github.com/rszemeti)" \
+    org.opencontainers.image.version=${BUILD_VERSION} \
+    org.opencontainers.image.created=${BUILD_DATE} \
+    org.opencontainers.image.revision=${BUILD_REF} \
+    org.opencontainers.image.source="https://github.com/rszemeti/SolarBat-AI"
