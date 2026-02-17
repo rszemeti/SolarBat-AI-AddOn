@@ -1,23 +1,18 @@
 ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base-python:3.12-alpine3.19
 FROM ${BUILD_FROM}
 
-# Install system deps
+# Install system dependencies
 RUN apk add --no-cache \
     bash \
     curl \
     git \
     jq \
-    # Needed for pip packages without compiling uvloop
     libffi
 
-# Install Python dependencies without uvloop
+# Install all Python dependencies in one layer
 RUN pip3 install --no-cache-dir --break-system-packages \
     appdaemon==4.4.2 \
     requests \
-    --no-deps
-
-# Manually install required dependencies (excluding uvloop)
-RUN pip3 install --no-cache-dir \
     aiohttp~=3.8.4 \
     aiohttp-jinja2~=1.5.1 \
     astral~=3.2 \
@@ -28,8 +23,8 @@ RUN pip3 install --no-cache-dir \
     paho-mqtt~=1.6.1 \
     pid~=3.0.4 \
     python-dateutil~=2.8.2 \
-    python-socketio<5.9,>=5.5 \
-    pytz<2023.4.0,>=2022.7.1 \
+    "python-socketio<5.9,>=5.5" \
+    "pytz<2023.4.0,>=2022.7.1" \
     pyyaml~=6.0 \
     sockjs~=0.11.0 \
     websocket-client~=1.5.1 \
