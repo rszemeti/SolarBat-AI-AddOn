@@ -1,89 +1,36 @@
-# Base image: Debian-based Python 3.12
-ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base-python:3.12-bullseye
-ARG BUILD_VERSION
+ARG BUILD_FROM
 FROM ${BUILD_FROM}
 
-# Use bash with pipefail
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-# -----------------------------
-# Install system dependencies
-# -----------------------------
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Install system deps + build tools for uvloop compilation
+RUN apk add --no-cache \
     bash \
     curl \
     git \
     jq \
-    libffi-dev \
-    build-essential \
+    build-base \
     python3-dev \
-    && rm -rf /var/lib/apt/lists/*
+    linux-headers
 
-# -----------------------------
-# Set working directory
-# -----------------------------
-WORKDIR /app
-
-# -----------------------------
-# Copy app files
-# -----------------------------
-COPY rootfs/ /app/
-
-# -----------------------------
 # Install Python dependencies
-# -----------------------------
 RUN pip3 install --no-cache-dir --break-system-packages \
     appdaemon==4.4.2 \
-    requests \
-    aiohttp~=3.8.4 \
-    aiohttp-jinja2~=1.5.1 \
-    astral~=3.2 \
-    bcrypt~=4.0.1 \
-    deepdiff==6.3.0 \
-    feedparser~=6.0.10 \
-    iso8601~=1.1.0 \
-    paho-mqtt~=1.6.1 \
-    pid~=3.0.4 \
-    python-dateutil~=2.8.2 \
-    "python-socketio<5.9,>=5.5" \
-    "pytz<2023.4.0,>=2022.7.1" \
-    pyyaml~=6.0 \
-    sockjs~=0.11.0 \
-    websocket-client~=1.5.1 \
-    tomli~=2.0.1 \
-    tomli-w~=1.0.0
+    requests
 
-# -----------------------------
-# Make scripts executable
-# -----------------------------
-RUN chmod +x /app/run.sh /app/bootstrap.sh
+# Remove build tools to keep image small
+RUN apk del --no-cache \
+    build-base \
+    python3-dev \
+    linux-headers
 
-# -----------------------------
-# Expose app port
-# -----------------------------
+# Create directories
+RUN mkdir -p /app /config /data
+
+# Copy startup scripts
+COPY rootfs/run.sh /run.sh
+COPY rootfs/appdaemon.yaml /app/appdaemon.yaml.template
+COPY rootfs/bootstrap.sh /bootstrap.sh
+RUN chmod a+x /run.sh /bootstrap.sh
+
 EXPOSE 5050
 
-# -----------------------------
-# Set default command
-# -----------------------------
-CMD ["/app/run.sh"]
-
-# -----------------------------
-# Metadata for HAOS
-# -----------------------------
-ARG BUILD_ARCH
-ARG BUILD_DATE
-ARG BUILD_DESCRIPTION
-ARG BUILD_NAME
-ARG BUILD_REF
-LABEL \
-    io.hass.name="${BUILD_NAME}" \
-    io.hass.description="${BUILD_DESCRIPTION}" \
-    io.hass.arch="${BUILD_ARCH}" \
-    io.hass.type="addon" \
-    io.hass.version=${BUILD_VERSION} \
-    maintainer="rszemeti (https://github.com/rszemeti)" \
-    org.opencontainers.image.version=${BUILD_VERSION} \
-    org.opencontainers.image.created=${BUILD_DATE} \
-    org.opencontainers.image.revision=${BUILD_REF} \
-    org.opencontainers.image.source="https://github.com/rszemeti/SolarBat-AI"
+CMD ["/run.sh"]
