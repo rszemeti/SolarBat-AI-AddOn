@@ -8,16 +8,22 @@ RUN apk add --no-cache \
     jq \
     build-base \
     python3-dev \
-    linux-headers
+    linux-headers \
+    gfortran \
+    openblas-dev
 
 RUN pip3 install --no-cache-dir --break-system-packages \
     appdaemon==4.4.2 \
-    requests
+    requests \
+    numpy \
+    scikit-learn \
+    pulp
 
 RUN apk del --no-cache \
     build-base \
     python3-dev \
-    linux-headers
+    linux-headers \
+    gfortran
 
 RUN mkdir -p /app /config /data
 
