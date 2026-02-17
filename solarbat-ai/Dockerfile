@@ -27,7 +27,7 @@ RUN mkdir -p /app /config /data
 
 # Copy startup scripts
 COPY rootfs/run.sh /run.sh
-COPY rootfs/appdaemon.yaml /app/appdaemon.yaml.template
+COPY rootfs/appdaemon.yaml.template /app/appdaemon.yaml.template
 COPY rootfs/bootstrap.sh /bootstrap.sh
 RUN chmod a+x /run.sh /bootstrap.sh
 
