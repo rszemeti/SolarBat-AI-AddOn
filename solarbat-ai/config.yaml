@@ -7,6 +7,10 @@ arch:
   - amd64
   - aarch64
   - armv7
+build_from:
+  amd64: "ghcr.io/home-assistant/amd64-base-python:3.11-alpine3.18"
+  aarch64: "ghcr.io/home-assistant/aarch64-base-python:3.11-alpine3.18"
+  armv7: "ghcr.io/home-assistant/armv7-base-python:3.11-alpine3.18"
 startup: "application"
 boot: "auto"
 init: false
