@@ -1,4 +1,4 @@
-ARG BUILD_FROM
+ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base-python:3.12-alpine3.19
 FROM ${BUILD_FROM}
 
 # Install system deps
@@ -9,8 +9,6 @@ RUN apk add --no-cache \
     jq
 
 # Install Python dependencies
-# Option 1: AppDaemon bundled inside container
-# Option 2 (future): replace appdaemon with lightweight HA websocket client
 RUN pip3 install --no-cache-dir --break-system-packages \
     appdaemon==4.4.2 \
     requests
@@ -20,7 +18,7 @@ RUN mkdir -p /app /config /data
 
 # Copy startup scripts
 COPY rootfs/run.sh /run.sh
-COPY rootfs/appdaemon.yaml /app/appdaemon.yaml.template
+COPY rootfs/appdaemon.yaml.template /app/appdaemon.yaml.template
 COPY rootfs/bootstrap.sh /bootstrap.sh
 RUN chmod a+x /run.sh /bootstrap.sh
 
