@@ -12,7 +12,8 @@ RUN apk add --no-cache \
 
 RUN pip3 install --no-cache-dir --break-system-packages \
     appdaemon==4.4.2 \
-    requests
+    requests \
+    aiohttp>=3.9.0
 
 RUN apk del --no-cache \
     build-base \
