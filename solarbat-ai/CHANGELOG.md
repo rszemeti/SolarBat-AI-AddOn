@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.20
+ - Index page loader ... 
+
 ## 1.0.0
 
 - Initial release

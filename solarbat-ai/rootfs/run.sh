@@ -127,6 +127,10 @@ if [ -d "$APP_DIR/apps/solar_optimizer" ]; then
     ln -sf "$DATA_DIR" "$APP_DIR/apps/solar_optimizer/.data"
 fi
 
+# Copy dashboard bootstrapper to AppDaemon's www directory
+mkdir -p /config/www
+cp /app/apps/solar_optimizer/web/index.html /config/www/solar_plan.html
+
 # ── Step 6: Launch AppDaemon ──
 echo "[SolarBat-AI] Starting AppDaemon on port 5050..."
 echo "============================================="
