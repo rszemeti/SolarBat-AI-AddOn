@@ -2,7 +2,7 @@
 # bootstrap.sh - Download/update SolarBat-AI app code from the main repo
 set -e
 
-REPO="YOUR_USERNAME/SolarBat-AI"
+REPO="rszemeti/SolarBat-AI"
 APP_DIR="/app/apps/solar_optimizer"
 VERSION_FILE="/data/.installed_version"
 CONFIG_DIR="/config"
