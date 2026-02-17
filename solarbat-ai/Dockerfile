@@ -1,4 +1,4 @@
-ARG BUILD_FROM
+ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base-python:3.11-alpine3.18
 FROM ${BUILD_FROM}
 
 RUN apk add --no-cache \
@@ -12,8 +12,7 @@ RUN apk add --no-cache \
 
 RUN pip3 install --no-cache-dir --break-system-packages \
     appdaemon==4.4.2 \
-    requests \
-    aiohttp>=3.9.0
+    requests
 
 RUN apk del --no-cache \
     build-base \
@@ -28,5 +27,4 @@ COPY rootfs/bootstrap.sh /bootstrap.sh
 RUN chmod a+x /run.sh /bootstrap.sh
 
 EXPOSE 5050
-
 CMD ["/run.sh"]
