@@ -1,4 +1,4 @@
-# Base image
+# Base image: Debian-based Python 3.12
 ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base-python:3.12-bullseye
 ARG BUILD_VERSION
 FROM ${BUILD_FROM}
@@ -25,18 +25,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # -----------------------------
-# Copy application files
+# Copy app files
 # -----------------------------
 COPY rootfs/ /app/
 
 # -----------------------------
 # Install Python dependencies
 # -----------------------------
-# Split pure Python and packages needing compilation
 RUN pip3 install --no-cache-dir --break-system-packages \
     appdaemon==4.4.2 \
     requests \
-    && pip3 install --no-cache-dir --break-system-packages \
     aiohttp~=3.8.4 \
     aiohttp-jinja2~=1.5.1 \
     astral~=3.2 \
@@ -60,11 +58,13 @@ RUN pip3 install --no-cache-dir --break-system-packages \
 # -----------------------------
 RUN chmod +x /app/run.sh /app/bootstrap.sh
 
+# -----------------------------
 # Expose app port
+# -----------------------------
 EXPOSE 5050
 
 # -----------------------------
-# Entrypoint
+# Set default command
 # -----------------------------
 CMD ["/app/run.sh"]
 
