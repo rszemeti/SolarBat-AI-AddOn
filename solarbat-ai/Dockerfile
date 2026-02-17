@@ -1,29 +1,42 @@
+# Base image
 ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base-python:3.12-bullseye
 ARG BUILD_VERSION
 FROM ${BUILD_FROM}
 
-# Set shell
+# Use bash with pipefail
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+# -----------------------------
 # Install system dependencies
+# -----------------------------
 RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     curl \
     git \
     jq \
     libffi-dev \
+    build-essential \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Set workdir
+# -----------------------------
+# Set working directory
+# -----------------------------
 WORKDIR /app
 
-# Copy app files
+# -----------------------------
+# Copy application files
+# -----------------------------
 COPY rootfs/ /app/
 
+# -----------------------------
 # Install Python dependencies
+# -----------------------------
+# Split pure Python and packages needing compilation
 RUN pip3 install --no-cache-dir --break-system-packages \
     appdaemon==4.4.2 \
     requests \
+    && pip3 install --no-cache-dir --break-system-packages \
     aiohttp~=3.8.4 \
     aiohttp-jinja2~=1.5.1 \
     astral~=3.2 \
@@ -42,14 +55,22 @@ RUN pip3 install --no-cache-dir --break-system-packages \
     tomli~=2.0.1 \
     tomli-w~=1.0.0
 
+# -----------------------------
 # Make scripts executable
+# -----------------------------
 RUN chmod +x /app/run.sh /app/bootstrap.sh
 
+# Expose app port
 EXPOSE 5050
 
+# -----------------------------
+# Entrypoint
+# -----------------------------
 CMD ["/app/run.sh"]
 
-# Metadata
+# -----------------------------
+# Metadata for HAOS
+# -----------------------------
 ARG BUILD_ARCH
 ARG BUILD_DATE
 ARG BUILD_DESCRIPTION
