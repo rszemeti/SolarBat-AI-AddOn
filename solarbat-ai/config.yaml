@@ -1,6 +1,6 @@
 name: "SolarBat-AI"
 description: "Intelligent solar battery optimizer for Octopus Agile with Solcast forecasts"
-version: "1.0.16"
+version: "1.0.17"
 slug: "solarbat-ai"
 url: "https://github.com/rszemeti/SolarBat-AI"
 arch:
